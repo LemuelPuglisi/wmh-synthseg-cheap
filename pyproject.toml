@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wmh_synthseg"
+version = "0.0.0"
+authors = [ { name="Lemuel Puglisi", email="lemuelpuglisi001@gmail.com" } ]
+description = "Trying to integrate multi-gpu processing into WMH-SynthSeg from Laso et al."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+
+[options]
+package_dir = "src"
+
+[options.packages.find]
+where="src"
