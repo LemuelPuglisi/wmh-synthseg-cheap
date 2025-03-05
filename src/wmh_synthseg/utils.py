@@ -345,3 +345,32 @@ def get_ras_axes(aff, n_dims=3):
             incorrect_value = unique[np.argmax(counts)]
             img_ras_axes[np.where(img_ras_axes == incorrect_value)[0][-1]] = i
     return img_ras_axes
+
+##############################
+
+def get_vram_usage(device=None):
+    """
+    Returns the current and maximum allocated VRAM (in GB) for the given device.
+    
+    Parameters:
+        device (torch.device or int, optional): The GPU device to check. Defaults to the current CUDA device.
+    
+    Returns:
+        dict: Dictionary containing current and max allocated VRAM in GB.
+    """
+    if device is None:
+        device = torch.cuda.current_device()
+    
+    if isinstance(device, int):
+        device = torch.device(f"cuda:{device}")
+    
+    if not torch.cuda.is_available():
+        return {"error": "CUDA is not available"}
+    
+    current_vram = torch.cuda.memory_allocated(device) / (1024 ** 3)  # Convert bytes to GB
+    max_vram = torch.cuda.max_memory_allocated(device) / (1024 ** 3)  # Convert bytes to GB
+    
+    return {
+        "current_vram_gb": round(current_vram, 2),
+        "max_vram_gb": round(max_vram, 2)
+    }
