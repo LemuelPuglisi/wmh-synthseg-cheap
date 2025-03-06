@@ -13,6 +13,15 @@ from wmh_synthseg.consts import label_list_segmentation
 from wmh_synthseg.utils import MRIwrite, align_volume_to_ref
 
 
+def find_ext(path):
+    if path.endswith('.nii.gz'):
+        return '.nii.gz'
+    elif path.endswith('.nii'):
+        return '.nii'
+    else:
+        raise Exception('format not supported.')
+
+
 @torch.inference_mode()
 def main():
 
@@ -102,9 +111,11 @@ def main():
 
     for nim, (input_file, output_dir) in tqdm(enumerate(zipped), total=n_inputs):
         
-        output_segm_file = os.path.join(output_dir, 'wmh_segm.nii.gz')
-        output_prob_file = os.path.join(output_dir, 'wmh_segm_probs.nii.gz') 
-        
+        extension = find_ext(input_file)
+        filename  = os.path.basename(input_file)
+        output_segm_file = os.path.join(output_dir, filename.replace(extension, f'_wmh_segm{extension}'))
+        output_prob_file = os.path.join(output_dir, filename.replace(extension, f'_wmh_prob{extension}'))
+            
         # assume the image is in MNI152 space
         affine_orig = nib.load(input_file).affine
         image_orig = transform_fn(input_file).squeeze(0)
